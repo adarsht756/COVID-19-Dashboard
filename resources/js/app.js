@@ -5,6 +5,9 @@ const recovered_element = document.querySelector(".recovered .value");
 const new_recovered_element = document.querySelector(".recovered .new-value");
 const deaths_element = document.querySelector(".deaths .value");
 const new_deaths_element = document.querySelector(".deaths .new-value");
+const recovers_in_state = document.getElementById("recovers_in_state");
+const deaths_in_state = document.getElementById("deaths_in_state");
+const confirms_in_state = document.getElementById("confirms_in_state");
 
 var parent = document.getElementById("svg2");
 var children = parent.children;
@@ -23,7 +26,7 @@ async function statsIndia() {
     })
     .then((data) => {
       stateJSONData = data;
-      // fetchStateData("UT");
+      fetchStateData("UT");
     })
 }
 
@@ -73,6 +76,7 @@ let stateCasesList = [],
   stateRecoveredList = [],
   stateConfirmedList = [],
   stateDates = [],
+  stateDeathList = [],
   formatedStateDates = [];
 
 // GET USERS COUNTRY CODE
@@ -157,18 +161,22 @@ function fetchData(country) {
 fetchData(user_country);
 
 
+// total object of last object in dates array
+var totalObj;
+
 // fetch state data
 function fetchStateData(state) {
   country_name_element.innerHTML = "Loading...";
   console.log(state);
-  (cases_list = []),
-    (recovered_list = []),
-    (deaths_list = []),
-    (dates = []),
-    (formatedDates = []),
+  // (cases_list = []),
+  //   (recovered_list = []),
+  //   (deaths_list = []),
+  //   (dates = []),
+  (formatedDates = []),
     (stateCasesList = []),
     (stateRecoveredList = []),
     (stateConfirmedList = []),
+    (stateDeathList = []),
     (stateDates = []),
     (formatedStateDates = []);
 
@@ -177,24 +185,23 @@ function fetchStateData(state) {
     redirect: "follow",
   };
 
+
   const api_fetch = (state) => {
     var confirmDelta = [], testedDelta = [], recoverDelta = [], datesDelta = [];
     for (var key in stateJSONData) {
       if (key === state) {
         var Dates = stateJSONData[key].dates
         for (var key in Dates) {
-          var totalObj = Dates[key].total
+          totalObj = Dates[key].total
           var valLen = Object.keys(totalObj).length;
-          var deltaObj = Dates[key].delta
-          // if (valLen >= 4) {
+          var deltaObj = Dates[key].delta;
           if (valLen >= 4 && deltaObj != undefined) {
-            dates.push(key);
             datesDelta.push(key);
-            cases_list.push(totalObj.tested);
+            // stateCasesList.push(totalObj.tested);
             testedDelta.push(deltaObj.tested);
-            recovered_list.push(totalObj.recovered);
+            // stateRecoveredList.push(totalObj.recovered);
             recoverDelta.push(deltaObj.recovered);
-            deaths_list.push(totalObj.deceased);
+            // stateDeathList.push(totalObj.deceased);
             confirmDelta.push(deltaObj.confirmed);
           }
         }
@@ -208,42 +215,30 @@ function fetchStateData(state) {
       stateDates.push(datesDelta[i]);
     }
 
-    updateUI(false);
     updateSateUI();
   };
   api_fetch(state);
 }
 
 // UPDATE UI FUNCTION
-function updateUI(flag) {
-  updateStats(flag);
+function updateUI() {
+  updateStats();
   axesLinearChart();
 }
 
 // UPDATE STATE CHARTS
 function updateSateUI() {
+  updateStateStats();
   axesLinearChartOfState();
 }
 
-function updateStats(flag) {
+function updateStats() {
   const total_cases = cases_list[cases_list.length - 1];
   const total_recovered = recovered_list[recovered_list.length - 1];
   const total_deaths = deaths_list[deaths_list.length - 1];
-  var new_confirmed_cases;
-  var new_recovered_cases;
-  var new_deaths_cases;
-  if (flag) {
-    new_confirmed_cases = total_cases - cases_list[cases_list.length - 2];
-    new_recovered_cases =
-      total_recovered - recovered_list[recovered_list.length - 2];
-    new_deaths_cases = total_deaths - deaths_list[deaths_list.length - 2];
-  }
-  else {
-    new_confirmed_cases = cases_list[cases_list.length - 2] - cases_list[cases_list.length - 3];
-    new_recovered_cases = recovered_list[recovered_list.length - 2] - recovered_list[recovered_list.length - 3];
-    new_deaths_cases = deaths_list[deaths_list.length - 2] - deaths_list[deaths_list.length - 3];
-    // console.log(deaths_list[deaths_list.length - 2], deaths_list[deaths_list.length - 3]);
-  }
+  var new_confirmed_cases = total_cases - cases_list[cases_list.length - 2];;
+  var new_recovered_cases = total_recovered - recovered_list[recovered_list.length - 2];
+  var new_deaths_cases = total_deaths - deaths_list[deaths_list.length - 2];
 
   country_name_element.innerHTML = user_country;
   total_cases_element.innerHTML = total_cases;
@@ -257,6 +252,21 @@ function updateStats(flag) {
   dates.forEach((date) => {
     formatedDates.push(formatDate(date));
   });
+
+}
+
+function updateStateStats() {
+  // var new_confirmed_cases = stateCasesList[stateCasesList.length - 2]
+  //   - stateCasesList[stateCasesList.length - 3];
+  // var new_recovered_cases = stateRecoveredList[stateRecoveredList.length - 2]
+  //   - stateRecoveredList[stateRecoveredList.length - 3];
+  // var new_deaths_cases = stateDeathList[stateDeathList.length - 2]
+  // - stateDeathList[stateDeathList.length - 3];
+  recovers_in_state.innerHTML = `+${totalObj.recovered}`;
+  deaths_in_state.innerHTML = `+${totalObj.deceased}`;
+  confirms_in_state.innerHTML = `+${totalObj.confirmed}`;
+
+  // format dates
   stateDates.forEach((date) => {
     formatedStateDates.push(formatDate(date));
   });
