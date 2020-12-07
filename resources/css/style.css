@@ -207,10 +207,23 @@ main {
   width: 80%;
   height: 70vh;
   min-height: 500px;
-
   margin: 0 auto;
   padding: 50px 0;
 }
+
+.stateChart {
+  width: 400px;
+  height: 30vh;
+  /* min-height: 500px; */
+  margin: 20px auto;
+  /* padding: 50px 0; */
+}
+
+.stateChartBox {
+  display: flex;
+  flex-direction: column;
+}
+
 /* -------- SEARCH COUNTRY -------- */
 .search-country {
   position: relative;

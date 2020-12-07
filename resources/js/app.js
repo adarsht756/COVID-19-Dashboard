@@ -5,32 +5,26 @@ const recovered_element = document.querySelector(".recovered .value");
 const new_recovered_element = document.querySelector(".recovered .new-value");
 const deaths_element = document.querySelector(".deaths .value");
 const new_deaths_element = document.querySelector(".deaths .new-value");
+
 var parent = document.getElementById("svg2");
 var children = parent.children;
 var stateDataRes;
 var stateJSONData;
 
 const ctx = document.getElementById("axes_line_chart").getContext("2d");
+const ctxStateRecover = document.getElementById("axes_line_chart_state_recover").getContext("2d");
+const ctxStateConfirm = document.getElementById("axes_line_chart_state_tested").getContext("2d");
+const ctxStateTested = document.getElementById("axes_line_chart_state_confirm").getContext("2d");
 
 async function statsIndia() {
-  var res = await fetch("https://api.covid19api.com/country/india");
-  var data = await res.json();
-  stateDataRes = await fetch("https://api.covid19india.org/v4/timeseries.json");
-  stateJSONData = stateDataRes.json();
-  // document.getElementById("sub-indstats1").innerHTML =
-  //   "Active Cases:<br /><span style='color: blue'>" +
-  //   data[data.length - 1].Active;
-  // document.getElementById("sub-indstats2").innerHTML =
-  //   "Deaths:<br /><span style='color: red'>" + data[data.length - 1].Deaths;
-  // document.getElementById("sub-indstats3").innerHTML =
-  //   "Recovered:<br /><span style='color: green'>" +
-  //   data[data.length - 1].Recovered;
-  // document.getElementById("sub-stats1").innerHTML =
-  //   "Active Cases:<br />" + data[data.length - 1].Active;
-  // document.getElementById("sub-stats2").innerHTML =
-  //   "Deaths:<br />" + data[data.length - 1].Deaths;
-  // document.getElementById("sub-stats3").innerHTML =
-  //   "Recovered:<br />" + data[data.length - 1].Recovered;
+  stateDataRes = await fetch("https://api.covid19india.org/v4/timeseries.json")
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      stateJSONData = data;
+      // fetchStateData("UT");
+    })
 }
 
 for (let i = 0; i < children.length; ++i) {
@@ -50,11 +44,10 @@ function hoverOff(ref) {
 
 async function selectState(element) {
   fetchStateData(element.target.attributes[0].value);
-  // document.getElementById("table-header").innerHTML =
-  //   element.target.attributes[1].value;
+
   user_country = element.target.attributes[1].value;
-  // window.scrollBy(0, 800);
   var stateName = (innerHTML = element.target.attributes[1].value);
+  country_name_element.innerHTML = stateName;
   var resource = await fetch("https://api.covid19india.org/data.json");
   var stateData = await resource.json();
   var allStates = stateData.statewise;
@@ -65,12 +58,6 @@ async function selectState(element) {
       break;
     }
   }
-  // document.getElementById("sub-stats1").innerHTML =
-  //   "Active Cases:<br />" + selectedState.active;
-  // document.getElementById("sub-stats2").innerHTML =
-  //   "Deaths:<br />" + selectedState.deaths;
-  // document.getElementById("sub-stats3").innerHTML =
-  //   "Recovered:<br />" + selectedState.recovered;
 }
 
 // APP VARIABLES
@@ -81,6 +68,13 @@ let app_data = [],
   deaths = [],
   formatedDates = [];
 
+// SEPRATE STATE CHART VARIABLES
+let stateCasesList = [],
+  stateRecoveredList = [],
+  stateConfirmedList = [],
+  stateDates = [],
+  formatedStateDates = [];
+
 // GET USERS COUNTRY CODE
 let country_code = geoplugin_countryCode();
 let user_country;
@@ -89,6 +83,7 @@ country_list.forEach((country) => {
     user_country = country.name;
   }
 });
+
 /* ---------------------------------------------- */
 /*                     FETCH API                  */
 /* ---------------------------------------------- */
@@ -97,7 +92,6 @@ country_list.forEach((country) => {
 function fetchData(country) {
   user_country = country;
   country_name_element.innerHTML = "Loading...";
-
   (cases_list = []),
     (recovered_list = []),
     (deaths_list = []),
@@ -166,56 +160,69 @@ fetchData(user_country);
 // fetch state data
 function fetchStateData(state) {
   country_name_element.innerHTML = "Loading...";
-
+  console.log(state);
   (cases_list = []),
     (recovered_list = []),
     (deaths_list = []),
     (dates = []),
-    (formatedDates = []);
+    (formatedDates = []),
+    (stateCasesList = []),
+    (stateRecoveredList = []),
+    (stateConfirmedList = []),
+    (stateDates = []),
+    (formatedStateDates = []);
 
   var requestOptions = {
     method: "GET",
     redirect: "follow",
   };
 
-  const api_fetch = async (state) => {
-    await fetch(
-      "https://api.covid19india.org/v4/timeseries.json",
-      requestOptions
-    )
-      .then((res) => {
-        return res.json();
-      })
-      .then((stateJSONData) => {
-        for (var key in stateJSONData) {
-          if (key === state) {
-            var Dates = stateJSONData[key].dates
-            for (var key in Dates) {
-              var val = Dates[key].total
-              var valLen = Object.keys(val).length;
-              if (valLen >= 4) {
-                dates.push(key);
-                cases_list.push(val.tested);
-                recovered_list.push(val.recovered);
-                deaths_list.push(val.deceased);
-              }
-            }
+  const api_fetch = (state) => {
+    var confirmDelta = [], testedDelta = [], recoverDelta = [], datesDelta = [];
+    for (var key in stateJSONData) {
+      if (key === state) {
+        var Dates = stateJSONData[key].dates
+        for (var key in Dates) {
+          var totalObj = Dates[key].total
+          var valLen = Object.keys(totalObj).length;
+          var deltaObj = Dates[key].delta
+          // if (valLen >= 4) {
+          if (valLen >= 4 && deltaObj != undefined) {
+            dates.push(key);
+            datesDelta.push(key);
+            cases_list.push(totalObj.tested);
+            testedDelta.push(deltaObj.tested);
+            recovered_list.push(totalObj.recovered);
+            recoverDelta.push(deltaObj.recovered);
+            deaths_list.push(totalObj.deceased);
+            confirmDelta.push(deltaObj.confirmed);
           }
         }
-      });
+      }
+    }
+
+    for (var i = testedDelta.length - 20; i < testedDelta.length; ++i) {
+      stateCasesList.push(testedDelta[i]);
+      stateRecoveredList.push(recoverDelta[i]);
+      stateConfirmedList.push(confirmDelta[i]);
+      stateDates.push(datesDelta[i]);
+    }
 
     updateUI(false);
+    updateSateUI();
   };
-
   api_fetch(state);
 }
-
-fetchStateData(user_country);
 
 // UPDATE UI FUNCTION
 function updateUI(flag) {
   updateStats(flag);
   axesLinearChart();
+}
+
+// UPDATE STATE CHARTS
+function updateSateUI() {
+  axesLinearChartOfState();
 }
 
 function updateStats(flag) {
@@ -250,10 +257,14 @@ function updateStats(flag) {
   dates.forEach((date) => {
     formatedDates.push(formatDate(date));
   });
+  stateDates.forEach((date) => {
+    formatedStateDates.push(formatDate(date));
+  });
 }
 
 // UPDATE CHART
 let my_chart;
+
 function axesLinearChart() {
   if (my_chart) {
     my_chart.destroy();
@@ -294,6 +305,84 @@ function axesLinearChart() {
       responsive: true,
       maintainAspectRatio: false,
     },
+  });
+}
+
+// UPDATE STATE CHARTS
+var my_chart_state1, my_chart_state2, my_chart_state3;
+
+function axesLinearChartOfState() {
+
+  if (my_chart_state1)
+    my_chart_state1.destroy();
+
+  if (my_chart_state2)
+    my_chart_state2.destroy();
+
+  if (my_chart_state3)
+    my_chart_state3.destroy();
+
+  my_chart_state1 = new Chart(ctxStateRecover, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: "Recovered",
+          data: stateRecoveredList,
+          fill: false,
+          borderColor: "green",
+          backgroundColor: "green",
+          borderWidth: 1,
+        }
+      ],
+      labels: formatedStateDates
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    }
+  });
+
+  my_chart_state2 = new Chart(ctxStateConfirm, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: "Confirmed",
+          data: stateConfirmedList,
+          fill: false,
+          borderColor: "red",
+          backgroundColor: "red",
+          borderWidth: 1,
+        }
+      ],
+      labels: formatedStateDates
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    }
+  });
+
+  my_chart_state3 = new Chart(ctxStateTested, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: "Tested",
+          data: stateCasesList,
+          fill: false,
+          borderColor: "blue",
+          backgroundColor: "blue",
+          borderWidth: 1,
+        }
+      ],
+      labels: formatedStateDates
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    }
   });
 }
 
