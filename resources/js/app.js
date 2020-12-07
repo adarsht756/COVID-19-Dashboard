@@ -8,6 +8,7 @@ const new_deaths_element = document.querySelector(".deaths .new-value");
 const recovers_in_state = document.getElementById("recovers_in_state");
 const deaths_in_state = document.getElementById("deaths_in_state");
 const confirms_in_state = document.getElementById("confirms_in_state");
+const currrentStateName = document.getElementById("stateName");
 
 var parent = document.getElementById("svg2");
 var children = parent.children;
@@ -47,20 +48,9 @@ function hoverOff(ref) {
 
 async function selectState(element) {
   fetchStateData(element.target.attributes[0].value);
-
   user_country = element.target.attributes[1].value;
   var stateName = (innerHTML = element.target.attributes[1].value);
-  country_name_element.innerHTML = stateName;
-  var resource = await fetch("https://api.covid19india.org/data.json");
-  var stateData = await resource.json();
-  var allStates = stateData.statewise;
-  var selectedState = null;
-  for (let i = 0; i < allStates.length; ++i) {
-    if (allStates[i].state == stateName) {
-      selectedState = allStates[i];
-      break;
-    }
-  }
+  currrentStateName.innerHTML = stateName;
 }
 
 // APP VARIABLES
@@ -166,12 +156,7 @@ var totalObj;
 
 // fetch state data
 function fetchStateData(state) {
-  country_name_element.innerHTML = "Loading...";
   console.log(state);
-  // (cases_list = []),
-  //   (recovered_list = []),
-  //   (deaths_list = []),
-  //   (dates = []),
   (formatedDates = []),
     (stateCasesList = []),
     (stateRecoveredList = []),
@@ -197,11 +182,8 @@ function fetchStateData(state) {
           var deltaObj = Dates[key].delta;
           if (valLen >= 4 && deltaObj != undefined) {
             datesDelta.push(key);
-            // stateCasesList.push(totalObj.tested);
             testedDelta.push(deltaObj.tested);
-            // stateRecoveredList.push(totalObj.recovered);
             recoverDelta.push(deltaObj.recovered);
-            // stateDeathList.push(totalObj.deceased);
             confirmDelta.push(deltaObj.confirmed);
           }
         }
@@ -256,15 +238,9 @@ function updateStats() {
 }
 
 function updateStateStats() {
-  // var new_confirmed_cases = stateCasesList[stateCasesList.length - 2]
-  //   - stateCasesList[stateCasesList.length - 3];
-  // var new_recovered_cases = stateRecoveredList[stateRecoveredList.length - 2]
-  //   - stateRecoveredList[stateRecoveredList.length - 3];
-  // var new_deaths_cases = stateDeathList[stateDeathList.length - 2]
-  // - stateDeathList[stateDeathList.length - 3];
-  recovers_in_state.innerHTML = `+${totalObj.recovered}`;
-  deaths_in_state.innerHTML = `+${totalObj.deceased}`;
-  confirms_in_state.innerHTML = `+${totalObj.confirmed}`;
+  recovers_in_state.innerHTML = `${totalObj.recovered}`;
+  deaths_in_state.innerHTML = `${totalObj.deceased}`;
+  confirms_in_state.innerHTML = `${totalObj.confirmed}`;
 
   // format dates
   stateDates.forEach((date) => {
