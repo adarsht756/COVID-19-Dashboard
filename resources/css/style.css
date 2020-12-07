@@ -5,7 +5,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  background-color: rgb(252, 252, 252);
+  /* background-color: rgb(252, 252, 252); */
   /* font-family: "Gilroy", sans-serif; */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -45,7 +45,6 @@ header {
   font-size: 1.8rem;
   margin: 0 auto;
 }
-
 .logo header {
   color: #6a149b;
 }
@@ -240,7 +239,7 @@ main {
 
   background-color: #111;
 
-  z-index: 1;
+  z-index: 9999;
 }
 .search-box input {
   width: 100%;

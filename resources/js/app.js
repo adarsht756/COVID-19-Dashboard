@@ -14,6 +14,9 @@ var parent = document.getElementById("svg2");
 var children = parent.children;
 var stateDataRes;
 var stateJSONData;
+var last_recovers_in_state = 0, last_deaths_in_state = 0, last_confirms_in_state = 0;
+var last_recovers_in_country = 0, last_deaths_in_country = 0, last_confirms_in_country = 0;
+
 
 const ctx = document.getElementById("axes_line_chart").getContext("2d");
 const ctxStateRecover = document.getElementById("axes_line_chart_state_recover").getContext("2d");
@@ -224,11 +227,17 @@ function updateStats() {
 
   country_name_element.innerHTML = user_country;
   total_cases_element.innerHTML = total_cases;
-  new_cases_element.innerHTML = `+${new_confirmed_cases}`;
+  // new_cases_element.innerHTML = `+${new_confirmed_cases}`;
+  animateValue(new_cases_element, last_confirms_in_country, new_confirmed_cases, 800, true);
+  last_confirms_in_country = new_confirmed_cases;
   recovered_element.innerHTML = total_recovered;
-  new_recovered_element.innerHTML = `+${new_recovered_cases}`;
+  // new_recovered_element.innerHTML = `+${new_recovered_cases}`;
+  animateValue(new_recovered_element, last_recovers_in_country, new_recovered_cases, 800, true);
+  last_recovers_in_country = new_recovered_cases;
   deaths_element.innerHTML = total_deaths;
-  new_deaths_element.innerHTML = `+${new_deaths_cases}`;
+  // new_deaths_element.innerHTML = `+${new_deaths_cases}`;
+  animateValue(new_deaths_element, last_deaths_in_country, new_deaths_cases, 800, true);
+  last_deaths_in_country = new_deaths_cases;
 
   // format dates
   dates.forEach((date) => {
@@ -237,10 +246,47 @@ function updateStats() {
 
 }
 
+function animateValue(id, start, end, duration, flag) {
+  // assumes integer values for start and end
+
+  var obj = id;
+  var range = end - start;
+  // no timer shorter than 50ms (not really visible any way)
+  var minTimer = 50;
+  // calc step time to show all interediate values
+  var stepTime = Math.abs(Math.floor(duration / range));
+
+  // never go below minTimer
+  stepTime = Math.max(stepTime, minTimer);
+
+  // get current time and calculate desired end time
+  var startTime = new Date().getTime();
+  var endTime = startTime + duration;
+  var timer;
+
+  function run() {
+    var now = new Date().getTime();
+    var remaining = Math.max((endTime - now) / duration, 0);
+    var value = Math.round(end - (remaining * range));
+    if (flag)
+      obj.innerHTML = `+${value}`;
+    else obj.innerHTML = value;
+    if (value == end) {
+      clearInterval(timer);
+    }
+  }
+
+  timer = setInterval(run, stepTime);
+  run();
+}
+
 function updateStateStats() {
-  recovers_in_state.innerHTML = `${totalObj.recovered}`;
-  deaths_in_state.innerHTML = `${totalObj.deceased}`;
-  confirms_in_state.innerHTML = `${totalObj.confirmed}`;
+  animateValue(recovers_in_state, last_recovers_in_state, totalObj.recovered, 800, false);
+  animateValue(deaths_in_state, last_deaths_in_state, totalObj.deceased, 800, false);
+  animateValue(confirms_in_state, last_confirms_in_state, totalObj.confirmed, 800, false);
+  last_confirms_in_state = totalObj.confirmed;
+  last_deaths_in_state = totalObj.deceased;
+  last_recovers_in_state = totalObj.recovered;
 
   // format dates
   stateDates.forEach((date) => {
