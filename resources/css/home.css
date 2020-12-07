@@ -1,0 +1,112 @@
+* {
+  /* background-color: #070707; */
+  scroll-behavior: smooth;
+}
+.vl {
+  rotate: 90deg;
+}
+
+.mapsvg {
+  fill: rgb(237, 246, 255);
+  stroke: rgb(48, 138, 241);
+  stroke-width: 0.5px;
+}
+
+.stateSVG {
+  transition: all 0.35s ease-out;
+}
+
+#mapindia {
+  width: fit-content;
+  margin-top: 0%;
+  margin-left: 5%;
+  float: left;
+}
+
+#title-text {
+  width: auto;
+  text-align: center;
+  margin-top: 8%;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-weight: 900;
+  font-size: 108px;
+  color: #fff;
+}
+
+#stats {
+  background-color: #aeaeae28;
+  width: 80%;
+  padding: 20px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  height: 150px;
+}
+#stats-india {
+  width: 30%;
+  height: fit-content;
+  background-color: #aeaeae00;
+  float: right;
+  border: 1px solid #ffffff;
+  margin-right: 8%;
+  margin-top: 10%;
+  border-radius: 15px;
+}
+
+#sub-stats1 {
+  background-color: #aeaeae00;
+  color: #fbfbfb;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 30px;
+  width: 33.33%;
+  float: left;
+}
+
+#sub-stats2 {
+  background-color: #aeaeae00;
+  color: #ffffff;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 30px;
+  width: 33.33%;
+  float: left;
+}
+
+#sub-stats3 {
+  background-color: #aeaeae00;
+  color: #ffffff;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 30px;
+  width: 33.33%;
+  float: left;
+}
+#sub-indstats1 {
+  background-color: #aeaeae00;
+  color: #fbfbfb;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 30px;
+  width: 90%;
+  margin-top: 2%;
+}
+
+#sub-indstats2 {
+  background-color: #aeaeae00;
+  color: #ffffff;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 30px;
+  width: 90%;
+  margin-top: 5%;
+}
+
+#sub-indstats3 {
+  background-color: #aeaeae00;
+  color: #ffffff;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 30px;
+  width: 90%;
+  margin-top: 5%;
+}
+
+.animation {
+  fill: rgb(200, 225, 255);
+  stroke: rgb(13, 104, 209);
+  stroke-width: 0.8px;
+}
