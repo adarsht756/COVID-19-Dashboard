@@ -9,6 +9,7 @@ const recovers_in_state = document.getElementById("recovers_in_state");
 const deaths_in_state = document.getElementById("deaths_in_state");
 const confirms_in_state = document.getElementById("confirms_in_state");
 const currrentStateName = document.getElementById("stateName");
+var opacityAnimation = document.getElementsByClassName("country-opacity-0");
 
 var parent = document.getElementById("svg2");
 var children = parent.children;
@@ -145,14 +146,25 @@ function fetchData(country) {
         });
       });
 
-    updateUI(true);
+    updateUI();
   };
 
   api_fetch(country);
 }
 
 fetchData(user_country);
+var i = 0;
 
+// lazy loading for better UI
+const lazyLoad = () => {
+  if (i === opacityAnimation.length) {
+    clearInterval(timer);
+    i = 0;
+    return;
+  }
+  opacityAnimation[i].classList.add("opacity-1");
+  i++;
+};
 
 // total object of last object in dates array
 var totalObj;
@@ -227,23 +239,20 @@ function updateStats() {
 
   country_name_element.innerHTML = user_country;
   total_cases_element.innerHTML = total_cases;
-  // new_cases_element.innerHTML = `+${new_confirmed_cases}`;
   animateValue(new_cases_element, last_confirms_in_country, new_confirmed_cases, 800, true);
   last_confirms_in_country = new_confirmed_cases;
   recovered_element.innerHTML = total_recovered;
-  // new_recovered_element.innerHTML = `+${new_recovered_cases}`;
   animateValue(new_recovered_element, last_recovers_in_country, new_recovered_cases, 800, true);
   last_recovers_in_country = new_recovered_cases;
   deaths_element.innerHTML = total_deaths;
-  // new_deaths_element.innerHTML = `+${new_deaths_cases}`;
   animateValue(new_deaths_element, last_deaths_in_country, new_deaths_cases, 800, true);
   last_deaths_in_country = new_deaths_cases;
+  timer = setInterval(lazyLoad, 150);
 
   // format dates
   dates.forEach((date) => {
     formatedDates.push(formatDate(date));
   });
-
 }
 
 function animateValue(id, start, end, duration, flag) {

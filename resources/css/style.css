@@ -6,6 +6,7 @@
   margin: 0;
   box-sizing: border-box;
   /* background-color: rgb(252, 252, 252); */
+  scroll-behavior: smooth;
   /* font-family: "Gilroy", sans-serif; */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -339,4 +340,13 @@ footer {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.country-opacity-0 {
+  opacity: 0;
+  transition: all 0.8s ease-in;
+}
+
+.opacity-1 {
+  opacity: 1;
 }

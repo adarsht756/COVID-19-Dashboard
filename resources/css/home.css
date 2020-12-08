@@ -1,11 +1,3 @@
-* {
-  /* background-color: #070707; */
-  scroll-behavior: smooth;
-}
-.vl {
-  rotate: 90deg;
-}
-
 .mapsvg {
   fill: rgb(228, 242, 255);
   stroke: rgb(48, 138, 241);
@@ -18,13 +10,18 @@
 
 #mapindia {
   width: fit-content;
-  margin-top: 0%;
-  margin-left: 5%;
-  float: left;
 }
 
 .animation {
   fill: rgb(156, 200, 253);
   stroke: rgb(13, 104, 209);
   stroke-width: 1px;
+}
+
+.mapindiaAndState {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 5rem 10rem;
+  align-items: center;
 }
