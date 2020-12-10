@@ -10,9 +10,15 @@
   /* font-family: "Gilroy", sans-serif; */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
 html {
   font-size: 16px;
 }
+
+#mainBody {
+  display: none;
+}
+
 .hide {
   display: none;
 }
@@ -22,9 +28,15 @@ html {
 @keyframes fade {
   0% {
     opacity: 0;
+    transform: translateX(-20%);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateX(10%);
   }
   100% {
     opacity: 1;
+    transform: translateX(0%);
   }
 }
 /* ---------------------------------------------- */
@@ -78,13 +90,6 @@ main {
 /* -------- BG IMAGE -------- */
 .stats {
   width: 100%;
-  /* background-image: linear-gradient(
-      rgba(255, 255, 255, 0.9),
-      rgba(255, 255, 255, 0.9)
-    ),
-    url("../img/bg.jpg");
-  background-size: cover; */
-  /* height: 92vh; */
 }
 /* -------- LATEST REPORT -------- */
 .latest-report {
@@ -97,13 +102,6 @@ main {
   padding-top: 50px;
 
   color: #fff;
-}
-
-.country,
-.total-cases,
-.recovered,
-.deaths {
-  height: 100px;
 }
 
 .name {
@@ -205,14 +203,13 @@ main {
 }
 
 .stateChart {
-  width: 400px;
-  height: 30vh;
-  /* min-height: 500px; */
+  width: 97%;
+  height: 250px;
   margin: 20px auto;
-  /* padding: 50px 0; */
 }
 
 .stateChartBox {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -221,7 +218,67 @@ main {
 
 .stateDetails {
   display: flex;
+  flex-direction: column;
   margin: 10px 0;
+}
+
+.mapindiaAndState {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0rem;
+  align-items: center;
+}
+
+.stateDetails-sep {
+  margin: 15px 0;
+}
+/* MAP CSS */
+
+.mapsvg {
+  fill: rgb(228, 242, 255);
+  stroke: rgb(48, 138, 241);
+  stroke-width: 0.5px;
+}
+
+.stateSVG {
+  transition: all 0.35s ease-out;
+}
+
+.animation {
+  fill: rgb(156, 200, 253);
+  stroke: rgb(13, 104, 209);
+  stroke-width: 1px;
+}
+
+@media screen and (min-width: 640px) {
+  .stateDetails {
+    flex-direction: row;
+    margin: 0;
+  }
+
+  .mapindiaAndState {
+    margin: 5rem;
+    flex-direction: row;
+  }
+
+  .stateChartBox {
+    width: 40%;
+  }
+
+  #mapIndia {
+    width: 100%;
+  }
+
+  .stateChart {
+    width: 400px;
+    height: 30vh;
+    margin: 20px auto;
+  }
+
+  .stateDetails-sep {
+    margin: 20px;
+  }
 }
 
 /* -------- SEARCH COUNTRY -------- */
@@ -229,6 +286,7 @@ main {
   position: relative;
   top: 10px;
 }
+
 .search-box {
   position: absolute;
   padding: 5px 0;
@@ -259,30 +317,35 @@ main {
 
 .country-list {
   display: flex;
-
+  flex-direction: column;
+  text-align: center;
   position: absolute;
   top: 30px;
 
   width: 400px;
-  height: 300px;
+  height: 500px;
 
-  background-color: #111;
+  background-color: #e4e4e4;
   opacity: 0.9;
 
   overflow-y: scroll;
 }
 
-.country-list ul {
+.text-gray {
+  color: black;
+  border-bottom: solid 0.5px gray;
+}
+
+.country-list div {
   width: 100%;
 }
 
-.country-list ul li {
+.country-list div div {
   list-style: none;
   cursor: pointer;
-  padding: 10px;
-  color: #fff;
+  padding: 6px;
 }
-.country-list ul li:hover {
+.country-list div div:hover {
   border-left: 1px solid #fff;
 }
 /* SCROLL BAR */
@@ -349,4 +412,18 @@ footer {
 
 .opacity-1 {
   opacity: 1;
+}
+
+/* loader */
+.loader {
+  position: absolute;
+  top: 43%;
+  left: 50%;
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  text-align: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
 }

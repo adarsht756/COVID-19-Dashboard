@@ -4,13 +4,15 @@ const new_cases_element = document.querySelector(".total-cases .new-value");
 const recovered_element = document.querySelector(".recovered .value");
 const new_recovered_element = document.querySelector(".recovered .new-value");
 const deaths_element = document.querySelector(".deaths .value");
+const loader = document.querySelector(".loader");
 const new_deaths_element = document.querySelector(".deaths .new-value");
 const recovers_in_state = document.getElementById("recovers_in_state");
 const deaths_in_state = document.getElementById("deaths_in_state");
 const confirms_in_state = document.getElementById("confirms_in_state");
 const currrentStateName = document.getElementById("stateName");
-var opacityAnimation = document.getElementsByClassName("country-opacity-0");
+const mainBody = document.getElementById("mainBody");
 
+var opacityAnimation = document.getElementsByClassName("country-opacity-0");
 var parent = document.getElementById("svg2");
 var children = parent.children;
 var stateDataRes;
@@ -160,6 +162,7 @@ const lazyLoad = () => {
   if (i === opacityAnimation.length) {
     clearInterval(timer);
     i = 0;
+    axesLinearChart();
     return;
   }
   opacityAnimation[i].classList.add("opacity-1");
@@ -219,8 +222,9 @@ function fetchStateData(state) {
 
 // UPDATE UI FUNCTION
 function updateUI() {
+  mainBody.style.display = "block";
+  loader.style.display = "none";
   updateStats();
-  axesLinearChart();
 }
 
 // UPDATE STATE CHARTS
@@ -239,13 +243,13 @@ function updateStats() {
 
   country_name_element.innerHTML = user_country;
   total_cases_element.innerHTML = total_cases;
-  animateValue(new_cases_element, last_confirms_in_country, new_confirmed_cases, 800, true);
+  animateValue(new_cases_element, last_confirms_in_country, new_confirmed_cases, 1000, true);
   last_confirms_in_country = new_confirmed_cases;
   recovered_element.innerHTML = total_recovered;
-  animateValue(new_recovered_element, last_recovers_in_country, new_recovered_cases, 800, true);
+  animateValue(new_recovered_element, last_recovers_in_country, new_recovered_cases, 2000, true);
   last_recovers_in_country = new_recovered_cases;
   deaths_element.innerHTML = total_deaths;
-  animateValue(new_deaths_element, last_deaths_in_country, new_deaths_cases, 800, true);
+  animateValue(new_deaths_element, last_deaths_in_country, new_deaths_cases, 2500, true);
   last_deaths_in_country = new_deaths_cases;
   timer = setInterval(lazyLoad, 150);
 
